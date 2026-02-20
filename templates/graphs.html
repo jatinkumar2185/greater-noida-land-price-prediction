@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics – LandVal AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="nav-brand" href="/">
+      <div class="nav-logo">🏛️</div>
+      <div>
+        <span class="nav-title">LandVal AI</span>
+        <span class="nav-subtitle">Greater Noida Property Intelligence</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="/"       class="nav-link">Predict</a>
+      <a href="/graphs" class="nav-link active">Analytics</a>
+    </div>
+  </nav>
+
+  <!-- GRAPHS -->
+  <div class="graphs-container">
+    <div class="graphs-header">
+      <h1>📊 Model Analytics &amp; EDA</h1>
+      <p>Exploratory Data Analysis and model performance graphs generated during training</p>
+    </div>
+
+    <div class="graph-grid">
+
+      <div class="graph-card">
+        <h3>📈 Price Distribution & Sector Comparison</h3>
+        <img src="{{ url_for('static', filename='graphs/price_distribution.png') }}"
+             alt="Price Distribution" loading="lazy" />
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.4); margin-top:0.75rem;">
+          Left: Histogram of land prices across all 1,200 records.
+          Right: Median price comparison across top-8 sectors.
+        </p>
+      </div>
+
+      <div class="graph-card">
+        <h3>🔗 Feature Correlation Heatmap</h3>
+        <img src="{{ url_for('static', filename='graphs/correlation_heatmap.png') }}"
+             alt="Correlation Heatmap" loading="lazy" />
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.4); margin-top:0.75rem;">
+          Shows Pearson correlation between all numeric features.
+          Area and Sector show highest correlation with Price.
+        </p>
+      </div>
+
+      <div class="graph-card">
+        <h3>🌳 Random Forest – Feature Importances</h3>
+        <img src="{{ url_for('static', filename='graphs/feature_importance.png') }}"
+             alt="Feature Importance" loading="lazy" />
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.4); margin-top:0.75rem;">
+          Higher bars indicate features that contribute more to price prediction.
+          Area and Metro Distance dominate importance scores.
+        </p>
+      </div>
+
+      <div class="graph-card">
+        <h3>🎯 Actual vs Predicted Price</h3>
+        <img src="{{ url_for('static', filename='graphs/actual_vs_predicted.png') }}"
+             alt="Actual vs Predicted" loading="lazy" />
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.4); margin-top:0.75rem;">
+          Points closer to the red dashed line = more accurate predictions.
+          The tight cluster shows the model generalises well.
+        </p>
+      </div>
+
+      <div class="graph-card" style="grid-column: 1 / -1;">
+        <h3>⚔️ Model Performance Comparison</h3>
+        <img src="{{ url_for('static', filename='graphs/model_comparison.png') }}"
+             alt="Model Comparison" loading="lazy" />
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.4); margin-top:0.75rem;">
+          Random Forest outperforms Linear Regression on both R² and MAE metrics.
+        </p>
+      </div>
+
+      <!-- Metrics Table -->
+      <div class="metrics-section">
+        <h3>📐 Detailed Evaluation Metrics</h3>
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Description</th>
+              <th>Linear Regression</th>
+              <th>Random Forest ✅</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>R² Score</strong></td>
+              <td>Goodness of fit (1.0 = perfect)</td>
+              <td class="loser">0.9419</td>
+              <td class="winner">0.9639</td>
+            </tr>
+            <tr>
+              <td><strong>MAE</strong></td>
+              <td>Mean Absolute Error (lower = better)</td>
+              <td class="loser">₹23.6 Lakh</td>
+              <td class="winner">₹17.5 Lakh</td>
+            </tr>
+            <tr>
+              <td><strong>RMSE</strong></td>
+              <td>Root Mean Square Error</td>
+              <td class="loser">₹32.6 Lakh</td>
+              <td class="winner">₹25.7 Lakh</td>
+            </tr>
+            <tr>
+              <td><strong>CV R² (5-fold)</strong></td>
+              <td>Cross-validation score (stability)</td>
+              <td class="loser">0.9438 ± 0.006</td>
+              <td class="winner">0.9619 ± 0.005</td>
+            </tr>
+            <tr>
+              <td><strong>Trees / Parameters</strong></td>
+              <td>Model complexity</td>
+              <td class="loser">Linear (10 params)</td>
+              <td class="winner">200 trees, depth 15</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.75rem; color:rgba(250,247,240,0.35); margin-top:1rem;">
+          ✅ Random Forest selected as the production model due to superior R² and lower MAE.
+          It handles non-linear relationships between features far better than Linear Regression.
+        </p>
+      </div>
+
+    </div><!-- /graph-grid -->
+
+    <div class="action-row" style="margin-top:2.5rem;">
+      <a href="/" class="btn-secondary btn-solid">← Back to Predictor</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    B.Tech Major Project — <span>Land Price Prediction System, Greater Noida</span>
+  </footer>
+</div>
+</body>
+</html>

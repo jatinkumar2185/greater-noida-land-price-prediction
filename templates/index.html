@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Greater Noida Land Price Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── HERO HEADER ──────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="badge">🏙️ B.Tech Major Project · ML Powered</div>
+    <h1 class="hero-title">Greater Noida<br><span class="accent">Land Price</span><br>Predictor</h1>
+    <p class="hero-sub">AI-driven property valuation using Random Forest ML model trained on 1,200+ real estate data points across 20 sectors of Greater Noida.</p>
+
+    <!-- Model Stats Strip -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <span class="stat-num">94.3%</span>
+        <span class="stat-label">Model Accuracy (R²)</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">1,200</span>
+        <span class="stat-label">Training Samples</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">20</span>
+        <span class="stat-label">Sectors Covered</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">RF</span>
+        <span class="stat-label">Best Algorithm</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── ERROR BANNER ─────────────────────────────────── -->
+{% if error %}
+<div class="error-banner">⚠️ {{ error }}</div>
+{% endif %}
+
+<!-- ── PREDICTION FORM ───────────────────────────────── -->
+<main class="main-container">
+  <section class="form-section">
+    <div class="section-label">01 — Property Details</div>
+    <h2 class="section-title">Enter Plot Information</h2>
+
+    <form action="/predict" method="POST" id="predForm">
+
+      <!-- ROW 1: Sector + Area -->
+      <div class="form-grid two-col">
+        <div class="field-group">
+          <label for="sector">📍 Sector / Location</label>
+          <select name="sector" id="sector" required>
+            <option value="" disabled selected>Select sector...</option>
+            {% for s in sectors %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="area">📐 Plot Area (sq. meters)</label>
+          <div class="input-with-unit">
+            <input type="number" name="area" id="area" min="50" max="10000"
+                   step="0.5" placeholder="e.g. 200" required/>
+            <span class="unit-tag">sqm</span>
+          </div>
+          <small class="hint">Typical: 100–500 sqm residential</small>
+        </div>
+      </div>
+
+      <!-- ROW 2: Road Width + Metro Distance -->
+      <div class="form-grid two-col">
+        <div class="field-group">
+          <label for="road_width">🛣️ Road Width (feet)</label>
+          <select name="road_width" id="road_width" required>
+            <option value="" disabled selected>Select road width...</option>
+            <option value="12">12 ft — Internal Lane</option>
+            <option value="18">18 ft — Small Road</option>
+            <option value="24">24 ft — Medium Road</option>
+            <option value="30">30 ft — Wide Road</option>
+            <option value="36">36 ft — Boulevard</option>
+            <option value="45">45 ft — Main Road</option>
+            <option value="60">60 ft — Arterial Road</option>
+            <option value="80">80 ft — Highway Facing</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="metro_dist">🚇 Distance from Metro (km)</label>
+          <div class="input-with-unit">
+            <input type="number" name="metro_dist" id="metro_dist"
+                   min="0.1" max="20" step="0.1" placeholder="e.g. 1.5" required/>
+            <span class="unit-tag">km</span>
+          </div>
+          <small class="hint">Aqua Line: Pari Chowk, Alpha 1, Delta</small>
+        </div>
+      </div>
+
+      <!-- ROW 3: Airport + Corner -->
+      <div class="form-grid two-col">
+        <div class="field-group">
+          <label for="airport_dist">✈️ Distance from Jewar Airport (km)</label>
+          <div class="input-with-unit">
+            <input type="number" name="airport_dist" id="airport_dist"
+                   min="1" max="60" step="0.1" placeholder="e.g. 20" required/>
+            <span class="unit-tag">km</span>
+          </div>
+          <small class="hint">Noida International Airport (upcoming)</small>
+        </div>
+        <div class="field-group">
+          <label>🔲 Corner Plot?</label>
+          <div class="toggle-group">
+            <label class="toggle-opt">
+              <input type="radio" name="corner_plot" value="Yes"/>
+              <span>Yes <em>(premium)</em></span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="corner_plot" value="No" checked/>
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 4: Facing -->
+      <div class="form-grid one-col">
+        <div class="field-group">
+          <label>🧭 Plot Facing Direction</label>
+          <div class="facing-grid">
+            <label class="facing-opt north">
+              <input type="radio" name="facing" value="North" required/>
+              <span class="dir">N</span><span class="dir-label">North</span>
+            </label>
+            <label class="facing-opt east">
+              <input type="radio" name="facing" value="East"/>
+              <span class="dir">E</span><span class="dir-label">East</span>
+            </label>
+            <label class="facing-opt south">
+              <input type="radio" name="facing" value="South"/>
+              <span class="dir">S</span><span class="dir-label">South</span>
+            </label>
+            <label class="facing-opt west">
+              <input type="radio" name="facing" value="West"/>
+              <span class="dir">W</span><span class="dir-label">West</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 5: Amenities -->
+      <div class="section-label" style="margin-top:2rem">02 — Nearby Amenities</div>
+      <div class="form-grid three-col amenities-row">
+        <div class="amenity-card">
+          <div class="amenity-icon">🏫</div>
+          <div class="amenity-name">School Nearby</div>
+          <div class="toggle-group small">
+            <label class="toggle-opt">
+              <input type="radio" name="nearby_school" value="Yes"/>
+              <span>Yes</span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="nearby_school" value="No" checked/>
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+        <div class="amenity-card">
+          <div class="amenity-icon">🏥</div>
+          <div class="amenity-name">Hospital Nearby</div>
+          <div class="toggle-group small">
+            <label class="toggle-opt">
+              <input type="radio" name="nearby_hospital" value="Yes"/>
+              <span>Yes</span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="nearby_hospital" value="No" checked/>
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+        <div class="amenity-card">
+          <div class="amenity-icon">🏬</div>
+          <div class="amenity-name">Commercial Zone</div>
+          <div class="toggle-group small">
+            <label class="toggle-opt">
+              <input type="radio" name="commercial_nearby" value="Yes"/>
+              <span>Yes</span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="commercial_nearby" value="No" checked/>
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <button type="submit" class="predict-btn" id="submitBtn">
+        <span class="btn-text">🔮 Predict Land Price</span>
+        <span class="btn-loader" style="display:none">⏳ Calculating...</span>
+      </button>
+
+    </form>
+  </section>
+
+  <!-- ── GRAPHS SECTION ───────────────────────────────── -->
+  <section class="graphs-section">
+    <div class="section-label">03 — Model Analytics</div>
+    <h2 class="section-title">Insights & Visualizations</h2>
+
+    <div class="graphs-grid">
+      <div class="graph-card">
+        <h3>Price Distribution</h3>
+        <img src="{{ url_for('static', filename='graphs/price_distribution.png') }}"
+             alt="Price Distribution Graph" loading="lazy"/>
+      </div>
+      <div class="graph-card">
+        <h3>Feature Importance</h3>
+        <img src="{{ url_for('static', filename='graphs/feature_importance.png') }}"
+             alt="Feature Importance Graph" loading="lazy"/>
+      </div>
+      <div class="graph-card">
+        <h3>Sector-wise Avg Price</h3>
+        <img src="{{ url_for('static', filename='graphs/sector_avg_price.png') }}"
+             alt="Sector Average Price" loading="lazy"/>
+      </div>
+      <div class="graph-card">
+        <h3>Actual vs Predicted</h3>
+        <img src="{{ url_for('static', filename='graphs/actual_vs_predicted.png') }}"
+             alt="Actual vs Predicted" loading="lazy"/>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>🎓 Greater Noida Land Price Prediction System</p>
+    <p>B.Tech Final Year Major Project · Machine Learning · Python + Flask</p>
+    <p style="opacity:0.5;font-size:0.8rem;margin-top:0.5rem">Random Forest Regressor · R² Score: 94.3% · Dataset: 1,200 rows</p>
+  </div>
+</footer>
+
+<script>
+// Show loader on form submit
+document.getElementById('predForm').addEventListener('submit', function() {
+  document.querySelector('.btn-text').style.display = 'none';
+  document.querySelector('.btn-loader').style.display = 'inline';
+  document.getElementById('submitBtn').disabled = true;
+});
+
+// Highlight selected facing direction
+document.querySelectorAll('.facing-opt input').forEach(function(input) {
+  input.addEventListener('change', function() {
+    document.querySelectorAll('.facing-opt').forEach(el => el.classList.remove('selected'));
+    this.closest('.facing-opt').classList.add('selected');
+  });
+});
+
+// Animate stat numbers on load
+window.addEventListener('load', function() {
+  document.querySelectorAll('.stat-num').forEach(function(el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(10px)';
+    setTimeout(function() {
+      el.style.transition = 'all 0.5s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, 300 + Math.random() * 400);
+  });
+});
+</script>
+</body>
+</html>

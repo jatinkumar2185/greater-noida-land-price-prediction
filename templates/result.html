@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Price Result — Greater Noida Land Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="result-page">
+
+<!-- HEADER -->
+<header class="result-header">
+  <a href="/" class="back-btn">← New Prediction</a>
+  <div class="header-logo">🏙️ Land Price Predictor</div>
+</header>
+
+<!-- RESULT HERO -->
+<section class="result-hero">
+  <div class="result-bg"></div>
+  <div class="result-content">
+    <div class="result-badge">✅ AI Prediction Complete</div>
+    <p class="result-label">Estimated Market Value</p>
+
+    <div class="result-price-wrap">
+      <h1 class="result-price" id="resultPrice">{{ formatted_price }}</h1>
+      <div class="result-price-label">{{ price_label }}</div>
+    </div>
+
+    <div class="result-psm">
+      <span class="psm-value">{{ price_per_sqm }}</span>
+      <span class="psm-label">per sq. meter</span>
+    </div>
+
+    <p class="result-note">
+      ⚡ Predicted by Random Forest Regressor (R² = 94.3%) trained on
+      1,200 Greater Noida land transaction records.
+    </p>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="result-main">
+
+  <!-- INPUT SUMMARY -->
+  <section class="result-card">
+    <h2 class="card-title">📋 Your Plot Details</h2>
+    <div class="input-summary-grid">
+      {% for key, val in input_data.items() %}
+      <div class="summary-item">
+        <span class="summary-key">{{ key }}</span>
+        <span class="summary-val">{{ val }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- MODEL METRICS -->
+  <section class="result-card">
+    <h2 class="card-title">📊 Model Performance</h2>
+    <p class="card-subtitle">Comparison of both trained models on test data</p>
+
+    <div class="metrics-grid">
+      <!-- Linear Regression -->
+      <div class="model-block lr-block">
+        <div class="model-name">Linear Regression</div>
+        <div class="metric-row">
+          <span>MAE</span>
+          <strong>₹{{ "{:,.0f}".format(metrics.lr.mae) }}</strong>
+        </div>
+        <div class="metric-row">
+          <span>RMSE</span>
+          <strong>₹{{ "{:,.0f}".format(metrics.lr.rmse) }}</strong>
+        </div>
+        <div class="metric-row">
+          <span>R² Score</span>
+          <strong class="r2">{{ metrics.lr.r2 }}</strong>
+        </div>
+      </div>
+
+      <!-- VS Divider -->
+      <div class="vs-divider">VS</div>
+
+      <!-- Random Forest -->
+      <div class="model-block rf-block best-model">
+        <div class="best-tag">★ Best Model</div>
+        <div class="model-name">Random Forest</div>
+        <div class="metric-row">
+          <span>MAE</span>
+          <strong>₹{{ "{:,.0f}".format(metrics.rf.mae) }}</strong>
+        </div>
+        <div class="metric-row">
+          <span>RMSE</span>
+          <strong>₹{{ "{:,.0f}".format(metrics.rf.rmse) }}</strong>
+        </div>
+        <div class="metric-row">
+          <span>R² Score</span>
+          <strong class="r2 highlight">{{ metrics.rf.r2 }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- R² Progress Bars -->
+    <div class="r2-bars">
+      <div class="r2-bar-row">
+        <span>Linear Regression</span>
+        <div class="r2-track"><div class="r2-fill lr-fill" style="width: {{ (metrics.lr.r2 * 100)|round(1) }}%"></div></div>
+        <span class="r2-pct">{{ (metrics.lr.r2 * 100)|round(1) }}%</span>
+      </div>
+      <div class="r2-bar-row">
+        <span>Random Forest</span>
+        <div class="r2-track"><div class="r2-fill rf-fill" style="width: {{ (metrics.rf.r2 * 100)|round(1) }}%"></div></div>
+        <span class="r2-pct rf-pct">{{ (metrics.rf.r2 * 100)|round(1) }}%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRAPHS -->
+  <section class="result-card">
+    <h2 class="card-title">📈 Model Visualizations</h2>
+    <div class="result-graphs-grid">
+      <div class="result-graph">
+        <p>Model Comparison</p>
+        <img src="{{ url_for('static', filename='graphs/model_comparison.png') }}" alt="Model Comparison"/>
+      </div>
+      <div class="result-graph">
+        <p>Actual vs Predicted</p>
+        <img src="{{ url_for('static', filename='graphs/actual_vs_predicted.png') }}" alt="Actual vs Predicted"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="result-cta">
+    <a href="/" class="cta-btn primary">🔮 Predict Another Plot</a>
+    <button onclick="window.print()" class="cta-btn secondary">🖨️ Print / Save</button>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>🎓 Greater Noida Land Price Prediction System · B.Tech Final Year Major Project</p>
+  </div>
+</footer>
+
+<script>
+// Animate the price on page load
+window.addEventListener('load', function() {
+  const priceEl = document.getElementById('resultPrice');
+  priceEl.style.opacity = '0';
+  priceEl.style.transform = 'scale(0.8)';
+  setTimeout(function() {
+    priceEl.style.transition = 'all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    priceEl.style.opacity = '1';
+    priceEl.style.transform = 'scale(1)';
+  }, 200);
+
+  // Animate R² bars
+  document.querySelectorAll('.r2-fill').forEach(function(bar) {
+    const targetW = bar.style.width;
+    bar.style.width = '0%';
+    setTimeout(function() {
+      bar.style.transition = 'width 1.2s ease';
+      bar.style.width = targetW;
+    }, 600);
+  });
+});
+</script>
+</body>
+</html>
