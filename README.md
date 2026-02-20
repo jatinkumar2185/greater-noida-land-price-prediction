@@ -1,5 +1,5 @@
 # 🏙️ Greater Noida Land Price Prediction System
-### B.Tech Final Year Major Project
+### B.Tech ML Project
 
 > An end-to-end Machine Learning web application that predicts land prices in Greater Noida using a Random Forest Regressor with **94.3% accuracy (R² Score)**.
 
@@ -110,11 +110,11 @@ python app.py
 
 ## 📊 Model Results
 
-| Metric | Linear Regression | Random Forest |
-|---|---|---|
-| MAE | ₹27,21,933 | ₹16,74,459 |
-| RMSE | ₹37,28,353 | ₹26,88,435 |
-| **R² Score** | **0.8912** | **0.9434 ✅** |
+| Metric       | Linear Regression | Random Forest |
+|--------------|-------------------|---------------|
+|   MAE        |    ₹27,21,933     |   ₹16,74,459  |
+| RMSE         |    ₹37,28,353     |   ₹26,88,435  |
+| **R² Score** |    **0.8912**     | **0.9434 ✅** |
 
 **Winner: Random Forest** — 94.3% accuracy!
 
@@ -137,19 +137,19 @@ python app.py
 
 ## 🎓 Viva Presentation Tips
 
-### 1. Explain the Problem
-> *"We built an ML system to predict land prices in Greater Noida. The real estate market is complex — prices depend on location, infrastructure, and amenities. Our model learns these patterns from 1,200 data points."*
+ 1. Explain the Problem
+> "We built an ML system to predict land prices in Greater Noida. The real estate market is complex — prices depend on location, infrastructure, and amenities. Our model learns these patterns from 1,200 data points."
 
-### 2. Explain Data Preprocessing
-> *"We encoded categorical variables: binary Yes/No → 1/0, Facing direction → one-hot encoding, and Sector → ordinal encoding based on market value."*
+ 2. Explain Data Preprocessing
+> "We encoded categorical variables: binary Yes/No → 1/0, Facing direction → one-hot encoding, and Sector → ordinal encoding based on market value."
 
-### 3. Why Random Forest Over Linear Regression?
-> *"Linear Regression assumes a linear relationship between features and price. But real estate pricing is non-linear. Random Forest uses multiple decision trees and captures complex patterns — giving us 94.3% accuracy vs 89.1% for Linear Regression."*
+ 3. Why Random Forest Over Linear Regression?
+> "Linear Regression assumes a linear relationship between features and price. But real estate pricing is non-linear. Random Forest uses multiple decision trees and captures complex patterns — giving us 94.3% accuracy vs 89.1% for Linear Regression."
 
-### 4. Explain Feature Importance
-> *"According to our model, Area and Metro Distance are the most important features. This makes real-world sense — larger plots cost more, and proximity to the Aqua Metro Line increases land value significantly."*
+ 4. Explain Feature Importance
+> "According to our model, Area and Metro Distance are the most important features. This makes real-world sense — larger plots cost more, and proximity to the Aqua Metro Line increases land value significantly."
 
-### 5. Explain Evaluation Metrics
+ 5. Explain Evaluation Metrics
 - **MAE (Mean Absolute Error)**: Average prediction error in ₹
 - **RMSE (Root Mean Squared Error)**: Penalizes large errors more
 - **R² Score**: % of variance explained (0.94 = 94% accuracy)
@@ -172,12 +172,13 @@ python app.py
 
 ## 👨‍💻 Developed by
 
-**B.Tech Final Year Student**  
-Department of Computer Science / AI & ML  
+**B.Tech 2nd Year Student**
+IILM UNIVERSITY Greater Noida
+BTECH CSE (AI & ML)  
 Greater Noida, Uttar Pradesh  
 
-*Guided by: [Faculty Name]*  
-*Batch: 2021–2025*
+*name : Jatin Kumar Singh  
+*Batch: 2024–2028*
 
 ---
 
